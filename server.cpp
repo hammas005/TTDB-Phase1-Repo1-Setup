@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -67,12 +68,61 @@ bool validityCheck() {
     return true;
 }
 
-int32_t main() {
+// PASS 0x1: RESOLVE
+map<string, uint32_t> callTable; // Stores function names and their byte offsets
+
+bool resolve() {
+    ifstream inFile("source.bin");
+    ofstream outFile("resolve.bin", ios::binary);
+    
+    if (!inFile.is_open() || !outFile.is_open()) {
+        cout << "Error opening files for Pass 0x1." << endl;
+        return false;
+    }
+
+    string line;
+    uint32_t currentOffset = 0;
+
+    while (readSourceLine(inFile, line)) {
+        string cmd = firstWord(line);
+        uint32_t size = line.length();
+        
+        // If it's a function declaration, save its memory offset in the Call Table
+        if (cmd == "func") {
+            size_t firstSpace = line.find(' ');
+            size_t secondSpace = line.find(' ', firstSpace + 1);
+            string funcName = line.substr(firstSpace + 1, secondSpace - firstSpace - 1);
+            callTable[funcName] = currentOffset;
+        }
+
+        // Write [offset][size][string] to resolve.bin securely
+        outFile.write(reinterpret_cast<char*>(&currentOffset), sizeof(currentOffset));
+        outFile.write(reinterpret_cast<char*>(&size), sizeof(size));
+        outFile.write(line.c_str(), size);
+        
+        // Calculate the starting position for the next line
+        currentOffset += sizeof(currentOffset) + sizeof(size) + size;
+    }
+    
+    inFile.close();
+    outFile.close();
+    
+    cout << "Pass 0x1: Resolve Passed Successfully (resolve.bin created)!" << endl;
+    return true;
+}
+
+iint32_t main() {
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
     // Execute Pass 0x0
     if (!validityCheck()) {
         cout << "Server shutting down due to validation errors." << endl;
+        return 1;
+    }
+
+    // Execute Pass 0x1
+    if (!resolve()) {
+        cout << "Server shutting down due to resolve errors." << endl;
         return 1;
     }
 
