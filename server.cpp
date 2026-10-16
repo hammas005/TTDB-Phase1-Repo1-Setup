@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <fstream>
 #include <map>
+#include <sstream>
 
 using namespace std;
 
@@ -130,7 +131,6 @@ bool execute() {
 
     uint32_t offset, size;
     
-    // Loop to read the binary file exactly as we wrote it
     while (binFile.read(reinterpret_cast<char*>(&offset), sizeof(offset))) {
         binFile.read(reinterpret_cast<char*>(&size), sizeof(size));
         
@@ -138,11 +138,22 @@ bool execute() {
         instruction.resize(size);
         binFile.read(&instruction[0], size);
         
-        // Command parsing and execution will go here in the next commits
+        // Parse the instruction string into individual words
+        stringstream ss(instruction);
+        string cmd;
+        ss >> cmd;
+
+        // Command: set [variable] [value]
+        if (cmd == "set") {
+            string varName;
+            int32_t value;
+            ss >> varName >> value;
+            memory[varName] = value; // Store the value in our memory map
+        }
     }
     
     binFile.close();
-    cout << "Pass 0x2: Binary instructions successfully loaded!" << endl;
+    cout << "Pass 0x2: Execution engine parsed successfully!" << endl;
     return true;
 }
 
