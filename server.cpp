@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 #include <sstream>
+#include <stack>
 
 using namespace std;
 
@@ -130,6 +131,7 @@ bool execute() {
     }
 
     uint32_t offset, size;
+    stack<uint32_t> callStack; // Tracks our return addresses
     
     while (binFile.read(reinterpret_cast<char*>(&offset), sizeof(offset))) {
         binFile.read(reinterpret_cast<char*>(&size), sizeof(size));
@@ -142,26 +144,35 @@ bool execute() {
         string cmd;
         ss >> cmd;
 
-        // Command: set [variable] [value]
         if (cmd == "set") {
             string varName;
             int32_t value;
             ss >> varName >> value;
             memory[varName] = value; 
         }
-        // Command: add [variable] [value]
         else if (cmd == "add") {
             string varName;
             int32_t value;
             ss >> varName >> value;
             memory[varName] += value;
         }
-        // NEW Command: print [variable]
         else if (cmd == "print") {
             string varName;
             ss >> varName;
-            // Print the variable name and its current value from memory
             cout << varName << " = " << memory[varName] << endl; 
+        }
+        // NEW Command: call [function_name]
+        else if (cmd == "call") {
+            string funcName;
+            ss >> funcName;
+            
+            // If the function exists in our Call Table, jump to it!
+            if (callTable.find(funcName) != callTable.end()) {
+                callStack.push(binFile.tellg());      // Save our current place
+                binFile.seekg(callTable[funcName]);   // Jump to the function!
+            } else {
+                cout << "Execution Error: Function '" << funcName << "' not found." << endl;
+            }
         }
     }
     
