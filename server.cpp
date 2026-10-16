@@ -193,11 +193,35 @@ bool execute() {
 
 
 // PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
+// PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
 void interactiveTimeTravel() {
     cout << "\n=== Time-Travel Debugger Active ===" << endl;
     cout << "Total execution steps recorded: " << memoryHistory.size() << endl;
     
-    // The interactive while-loop will go here in the next step
+    string input;
+    while (true) {
+        cout << "\nEnter a step number to time-travel (or type 'exit' to quit): ";
+        cin >> input;
+        
+        if (input == "exit") break;
+        
+        int step;
+        try {
+            step = stoi(input); // Convert text to integer
+        } catch (...) {
+            cout << "Invalid input. Please enter a valid number." << endl;
+            continue;
+        }
+        
+        // Ensure the step actually exists in our history
+        if (step < 1 || step > (int)memoryHistory.size()) {
+            cout << "Error: Step out of bounds." << endl;
+            continue;
+        }
+        
+        // We will print the variables from the snapshot in the next commit!
+        cout << "Successfully time-traveled to step " << step << "!" << endl;
+    }
     
     cout << "Exiting Time-Travel Debugger. Goodbye!" << endl;
 }
