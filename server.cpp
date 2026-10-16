@@ -193,7 +193,6 @@ bool execute() {
 
 
 // PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
-// PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
 void interactiveTimeTravel() {
     cout << "\n=== Time-Travel Debugger Active ===" << endl;
     cout << "Total execution steps recorded: " << memoryHistory.size() << endl;
@@ -207,20 +206,30 @@ void interactiveTimeTravel() {
         
         int step;
         try {
-            step = stoi(input); // Convert text to integer
+            step = stoi(input); 
         } catch (...) {
             cout << "Invalid input. Please enter a valid number." << endl;
             continue;
         }
         
-        // Ensure the step actually exists in our history
         if (step < 1 || step > (int)memoryHistory.size()) {
             cout << "Error: Step out of bounds." << endl;
             continue;
         }
         
-        // We will print the variables from the snapshot in the next commit!
-        cout << "Successfully time-traveled to step " << step << "!" << endl;
+        // NEW: Retrieve and print the memory state at the requested step!
+        cout << "--- Memory State at Step " << step << " ---" << endl;
+        map<string, int32_t> snapshot = memoryHistory[step - 1]; // -1 because vectors are 0-indexed
+        
+        if (snapshot.empty()) {
+            cout << "(Memory is empty)" << endl;
+        } else {
+            // Loop through all variables in the snapshot and print them
+            for (auto const& [varName, value] : snapshot) {
+                cout << varName << " = " << value << endl;
+            }
+        }
+        cout << "-------------------------------" << endl;
     }
     
     cout << "Exiting Time-Travel Debugger. Goodbye!" << endl;
