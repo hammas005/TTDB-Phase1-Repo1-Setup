@@ -75,7 +75,6 @@ bool validityCheck() {
 
 // PASS 0x1: RESOLVE
 bool resolve() {
-    // Open source for reading, open resolve.bin for binary writing
     ifstream inFile("source.bin");
     ofstream outFile("resolve.bin", ios::binary);
     
@@ -84,12 +83,37 @@ bool resolve() {
         return false;
     }
 
-    // We will add the binary serialization loop here in the next step
+    string line;
+    uint32_t currentOffset = 0;
+
+    // Read line by line to calculate offsets and write binary data
+    while (readSourceLine(inFile, line)) {
+        string cmd = firstWord(line);
+        uint32_t size = line.length();
+        
+        // If it's a function, extract the name and save its memory location
+        if (cmd == "func") {
+            size_t firstSpace = line.find(' ');
+            size_t secondSpace = line.find(' ', firstSpace + 1);
+            if (firstSpace != string::npos && secondSpace != string::npos) {
+                string funcName = line.substr(firstSpace + 1, secondSpace - firstSpace - 1);
+                callTable[funcName] = currentOffset;
+            }
+        }
+
+        // Write [offset][size][string] sequentially to the binary file
+        outFile.write(reinterpret_cast<char*>(&currentOffset), sizeof(currentOffset));
+        outFile.write(reinterpret_cast<char*>(&size), sizeof(size));
+        outFile.write(line.c_str(), size);
+        
+        // Move the offset forward by the exact size of the data we just wrote
+        currentOffset += sizeof(currentOffset) + sizeof(size) + size;
+    }
     
     inFile.close();
     outFile.close();
     
-    cout << "Pass 0x1: File streams successfully opened!" << endl;
+    cout << "Pass 0x1: Resolve Passed Successfully (resolve.bin created)!" << endl;
     return true;
 }
 int32_t main() {
