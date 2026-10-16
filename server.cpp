@@ -236,6 +236,7 @@ void interactiveTimeTravel() {
 }
 
 int32_t main() {
+    // --- MAIN ENTRY POINT ---
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
     if (!validityCheck()) {
