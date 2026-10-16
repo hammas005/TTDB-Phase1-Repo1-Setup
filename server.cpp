@@ -190,6 +190,18 @@ bool execute() {
     cout << "Pass 0x2: Execution engine ran successfully!" << endl;
     return true;
 }
+
+
+// PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
+void interactiveTimeTravel() {
+    cout << "\n=== Time-Travel Debugger Active ===" << endl;
+    cout << "Total execution steps recorded: " << memoryHistory.size() << endl;
+    
+    // The interactive while-loop will go here in the next step
+    
+    cout << "Exiting Time-Travel Debugger. Goodbye!" << endl;
+}
+
 int32_t main() {
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
@@ -203,11 +215,13 @@ int32_t main() {
         return 1;
     }
     
-    // Run Pass 0x2
     if (!execute()) {
         cout << "Server shutting down due to execution errors." << endl;
         return 1;
     }
+    
+    // Run Pass 0x3
+    interactiveTimeTravel();
     
     return 0;
 }
