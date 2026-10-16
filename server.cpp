@@ -35,6 +35,7 @@ string firstWord(const string &line) {
 
 // PASS 0x0: VALIDITY CHECK
 bool validityCheck() {
+    // Validates source code for illegal function nesting and missing ends
     ifstream file("source.bin");
     
     if (!file.is_open()) {
