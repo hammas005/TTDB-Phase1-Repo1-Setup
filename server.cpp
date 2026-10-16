@@ -138,7 +138,6 @@ bool execute() {
         instruction.resize(size);
         binFile.read(&instruction[0], size);
         
-        // Parse the instruction string into individual words
         stringstream ss(instruction);
         string cmd;
         ss >> cmd;
@@ -148,7 +147,14 @@ bool execute() {
             string varName;
             int32_t value;
             ss >> varName >> value;
-            memory[varName] = value; // Store the value in our memory map
+            memory[varName] = value; 
+        }
+        // NEW Command: add [variable] [value]
+        else if (cmd == "add") {
+            string varName;
+            int32_t value;
+            ss >> varName >> value;
+            memory[varName] += value; // Add to existing value
         }
     }
     
