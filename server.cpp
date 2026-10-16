@@ -8,6 +8,8 @@ using namespace std;
 
 // Global Call Table to store function names and their byte offsets
 map<string, uint32_t> callTable;
+// Global Memory Map to track variable states during Pass 0x2
+map<string, int32_t> memory;
 
 // Helper 1: Reads the file line by line, skipping blank lines
 bool readSourceLine(ifstream &in, string &out) {
@@ -116,18 +118,40 @@ bool resolve() {
     cout << "Pass 0x1: Resolve Passed Successfully (resolve.bin created)!" << endl;
     return true;
 }
+
+// PASS 0x2: EXECUTION SIMULATION
+bool execute() {
+    ifstream binFile("resolve.bin", ios::binary);
+    
+    if (!binFile.is_open()) {
+        cout << "Error: Could not open resolve.bin for execution." << endl;
+        return false;
+    }
+
+    // The binary reading and command execution loop will go here next
+    
+    binFile.close();
+    cout << "Pass 0x2: Execution engine initialized!" << endl;
+    return true;
+}
+
+
 int32_t main() {
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
-    // Run Pass 0x0
     if (!validityCheck()) {
         cout << "Server shutting down due to validation errors." << endl;
         return 1;
     }
 
-    // Run Pass 0x1
     if (!resolve()) {
         cout << "Server shutting down due to resolve errors." << endl;
+        return 1;
+    }
+    
+    // Run Pass 0x2
+    if (!execute()) {
+        cout << "Server shutting down due to execution errors." << endl;
         return 1;
     }
     
