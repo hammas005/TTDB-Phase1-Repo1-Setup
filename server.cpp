@@ -128,10 +128,21 @@ bool execute() {
         return false;
     }
 
-    // The binary reading and command execution loop will go here next
+    uint32_t offset, size;
+    
+    // Loop to read the binary file exactly as we wrote it
+    while (binFile.read(reinterpret_cast<char*>(&offset), sizeof(offset))) {
+        binFile.read(reinterpret_cast<char*>(&size), sizeof(size));
+        
+        string instruction;
+        instruction.resize(size);
+        binFile.read(&instruction[0], size);
+        
+        // Command parsing and execution will go here in the next commits
+    }
     
     binFile.close();
-    cout << "Pass 0x2: Execution engine initialized!" << endl;
+    cout << "Pass 0x2: Binary instructions successfully loaded!" << endl;
     return true;
 }
 
