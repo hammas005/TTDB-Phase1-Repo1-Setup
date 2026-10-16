@@ -197,6 +197,7 @@ bool execute() {
 
 // PASS 0x3: TIME-TRAVEL INTERACTIVE PROMPT
 void interactiveTimeTravel() {
+    // Provides CLI interface for navigating historical memory states
     cout << "\n=== Time-Travel Debugger Active ===" << endl;
     cout << "Total execution steps recorded: " << memoryHistory.size() << endl;
     
