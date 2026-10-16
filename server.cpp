@@ -85,6 +85,7 @@ bool validityCheck() {
 
 // PASS 0x1: RESOLVE
 bool resolve() {
+    // Serializes text commands into binary format and builds Call Table
     ifstream inFile("source.bin");
     ofstream outFile("resolve.bin", ios::binary);
     
