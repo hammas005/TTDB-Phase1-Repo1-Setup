@@ -5,13 +5,18 @@
 #include <map>
 #include <sstream>
 #include <stack>
+#include <vector>
 
 using namespace std;
 
 // Global Call Table to store function names and their byte offsets
 map<string, uint32_t> callTable;
-// Global Memory Map to track variable states during Pass 0x2
+
+// Global Memory Map to track variable states
 map<string, int32_t> memory;
+
+// NEW: Time-Travel History to store memory snapshots after every command
+vector<map<string, int32_t>> memoryHistory;
 
 // Helper 1: Reads the file line by line, skipping blank lines
 bool readSourceLine(ifstream &in, string &out) {
@@ -170,13 +175,15 @@ bool execute() {
                 cout << "Execution Error: Function '" << funcName << "' not found." << endl;
             }
         }
-        // NEW Command: func_end
         else if (cmd == "func_end") {
             if (!callStack.empty()) {
-                binFile.seekg(callStack.top()); // Go back to where we called from
-                callStack.pop();                // Remove the used return address
+                binFile.seekg(callStack.top()); 
+                callStack.pop();                
             }
         }
+
+        // NEW: Take a snapshot of memory after executing this instruction
+        memoryHistory.push_back(memory);
     }
     
     binFile.close();
