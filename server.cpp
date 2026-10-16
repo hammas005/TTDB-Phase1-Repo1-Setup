@@ -73,12 +73,37 @@ bool validityCheck() {
     return true;
 }
 
+// PASS 0x1: RESOLVE
+bool resolve() {
+    // Open source for reading, open resolve.bin for binary writing
+    ifstream inFile("source.bin");
+    ofstream outFile("resolve.bin", ios::binary);
+    
+    if (!inFile.is_open() || !outFile.is_open()) {
+        cout << "Error: Could not open files for Pass 0x1." << endl;
+        return false;
+    }
+
+    // We will add the binary serialization loop here in the next step
+    
+    inFile.close();
+    outFile.close();
+    
+    cout << "Pass 0x1: File streams successfully opened!" << endl;
+    return true;
+}
 int32_t main() {
-    cout << "Server starting..." << endl;
+    cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
     // Run Pass 0x0
     if (!validityCheck()) {
         cout << "Server shutting down due to validation errors." << endl;
+        return 1;
+    }
+
+    // Run Pass 0x1
+    if (!resolve()) {
+        cout << "Server shutting down due to resolve errors." << endl;
         return 1;
     }
     
