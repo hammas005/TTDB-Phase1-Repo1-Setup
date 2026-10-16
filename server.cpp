@@ -140,6 +140,7 @@ bool execute() {
     }
 
     uint32_t offset, size;
+    // Maintains return addresses for nested function execution
     stack<uint32_t> callStack; 
     
     while (binFile.read(reinterpret_cast<char*>(&offset), sizeof(offset))) {
