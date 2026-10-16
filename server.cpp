@@ -129,6 +129,7 @@ bool resolve() {
 }
 // PASS 0x2: EXECUTION SIMULATION
 bool execute() {
+    // Reads binary payload, executes instructions, and tracks memory state
     ifstream binFile("resolve.bin", ios::binary);
     
     if (!binFile.is_open()) {
