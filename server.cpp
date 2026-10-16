@@ -10,6 +10,7 @@
 using namespace std;
 
 // Global Call Table to store function names and their byte offsets
+// Maps function names to their absolute byte offsets in the binary payload
 map<string, uint32_t> callTable;
 
 // Global Memory Map to track variable states
