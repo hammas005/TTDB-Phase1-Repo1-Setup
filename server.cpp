@@ -13,6 +13,7 @@ using namespace std;
 map<string, uint32_t> callTable;
 
 // Global Memory Map to track variable states
+// Tracks the current integer value of active variables
 map<string, int32_t> memory;
 
 // NEW: Time-Travel History to store memory snapshots after every command
