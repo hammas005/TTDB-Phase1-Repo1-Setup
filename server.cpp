@@ -149,12 +149,19 @@ bool execute() {
             ss >> varName >> value;
             memory[varName] = value; 
         }
-        // NEW Command: add [variable] [value]
+        // Command: add [variable] [value]
         else if (cmd == "add") {
             string varName;
             int32_t value;
             ss >> varName >> value;
-            memory[varName] += value; // Add to existing value
+            memory[varName] += value;
+        }
+        // NEW Command: print [variable]
+        else if (cmd == "print") {
+            string varName;
+            ss >> varName;
+            // Print the variable name and its current value from memory
+            cout << varName << " = " << memory[varName] << endl; 
         }
     }
     
@@ -162,7 +169,6 @@ bool execute() {
     cout << "Pass 0x2: Execution engine parsed successfully!" << endl;
     return true;
 }
-
 
 int32_t main() {
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
