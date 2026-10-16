@@ -120,7 +120,6 @@ bool resolve() {
     cout << "Pass 0x1: Resolve Passed Successfully (resolve.bin created)!" << endl;
     return true;
 }
-
 // PASS 0x2: EXECUTION SIMULATION
 bool execute() {
     ifstream binFile("resolve.bin", ios::binary);
@@ -131,7 +130,7 @@ bool execute() {
     }
 
     uint32_t offset, size;
-    stack<uint32_t> callStack; // Tracks our return addresses
+    stack<uint32_t> callStack; 
     
     while (binFile.read(reinterpret_cast<char*>(&offset), sizeof(offset))) {
         binFile.read(reinterpret_cast<char*>(&size), sizeof(size));
@@ -161,26 +160,29 @@ bool execute() {
             ss >> varName;
             cout << varName << " = " << memory[varName] << endl; 
         }
-        // NEW Command: call [function_name]
         else if (cmd == "call") {
             string funcName;
             ss >> funcName;
-            
-            // If the function exists in our Call Table, jump to it!
             if (callTable.find(funcName) != callTable.end()) {
-                callStack.push(binFile.tellg());      // Save our current place
-                binFile.seekg(callTable[funcName]);   // Jump to the function!
+                callStack.push(binFile.tellg());      
+                binFile.seekg(callTable[funcName]);   
             } else {
                 cout << "Execution Error: Function '" << funcName << "' not found." << endl;
+            }
+        }
+        // NEW Command: func_end
+        else if (cmd == "func_end") {
+            if (!callStack.empty()) {
+                binFile.seekg(callStack.top()); // Go back to where we called from
+                callStack.pop();                // Remove the used return address
             }
         }
     }
     
     binFile.close();
-    cout << "Pass 0x2: Execution engine parsed successfully!" << endl;
+    cout << "Pass 0x2: Execution engine ran successfully!" << endl;
     return true;
 }
-
 int32_t main() {
     cout << "--- Starting Time-Travel Debugger Server ---" << endl;
     
